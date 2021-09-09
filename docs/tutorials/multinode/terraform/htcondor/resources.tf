@@ -40,17 +40,21 @@ variable "use_preemptibles" {
     type = bool
     default = true
 }
-variable "metric_target_loadavg" { 
-  type = number 
+variable "metric_target_loadavg" {
+  type = number
   default = "1.0"
 }
-variable "metric_target_queue" { 
-  type = number 
+variable "metric_target_queue" {
+  type = number
   default = 10
 }
 variable "compute_instance_type" {
   type = string
   default = "n1-standard-1"
+}
+variable "gpu_type" {
+  type = string
+  default = "nvidia-tesla-t4"
 }
 variable "instance_type" {
   type = string
@@ -63,41 +67,41 @@ variable "service_account" {
 locals{
   autoscaler = file("${path.module}/autoscaler.py")
   compute_startup = templatefile(
-    "${path.module}/startup-centos.sh", 
+    "${path.module}/startup-centos.sh",
     {
       "project" = var.project,
       "cluster_name" = var.cluster_name,
-      "htserver_type" = "compute", 
-      "osversion" = var.osversion, 
-      "zone" = var.zone, 
-      "condorversion" = var.condorversion, 
-      "max_replicas" = var.max_replicas, 
+      "htserver_type" = "compute",
+      "osversion" = var.osversion,
+      "zone" = var.zone,
+      "condorversion" = var.condorversion,
+      "max_replicas" = var.max_replicas,
       "autoscaler" = "",
       "admin_email" = var.admin_email
     })
   submit_startup = templatefile(
-    "${path.module}/startup-centos.sh", 
+    "${path.module}/startup-centos.sh",
     {
       "project" = var.project,
       "cluster_name" = var.cluster_name,
-      "htserver_type" = "submit", 
-      "osversion" = var.osversion, 
-      "condorversion" = var.condorversion, 
-      "zone" = var.zone, 
-      "max_replicas" = var.max_replicas, 
+      "htserver_type" = "submit",
+      "osversion" = var.osversion,
+      "condorversion" = var.condorversion,
+      "zone" = var.zone,
+      "max_replicas" = var.max_replicas,
       "autoscaler" = local.autoscaler,
       "admin_email" = var.admin_email
     })
   manager_startup = templatefile(
-    "${path.module}/startup-centos.sh", 
+    "${path.module}/startup-centos.sh",
     {
       "project" = var.project,
       "cluster_name" = var.cluster_name,
-      "htserver_type" = "manager", 
-      "osversion" = var.osversion, 
-      "zone" = var.zone, 
-      "max_replicas" = var.max_replicas, 
-      "condorversion" = var.condorversion, 
+      "htserver_type" = "manager",
+      "osversion" = var.osversion,
+      "zone" = var.zone,
+      "max_replicas" = var.max_replicas,
+      "condorversion" = var.condorversion,
       "autoscaler" = "",
       "admin_email" = var.admin_email
     })
@@ -254,6 +258,11 @@ resource "google_compute_instance_template" "condor-compute" {
   project = var.project
   region  = var.zone
 
+  guest_accelerator {
+    type = var.gpu_type
+    count = "1"
+  }
+
   scheduling {
     automatic_restart   = "false"
     on_host_maintenance = "TERMINATE"
@@ -288,9 +297,9 @@ resource "google_compute_instance_group_manager" "condor-compute-igm" {
     create = "60m"
     delete = "2h"
   }
-  # Yup, didn't want to use this, but I was getting create and destroy errors. 
+  # Yup, didn't want to use this, but I was getting create and destroy errors.
   depends_on = [
-   google_compute_instance_template.condor-compute 
+   google_compute_instance_template.condor-compute
   ]
   zone = var.zone
 }

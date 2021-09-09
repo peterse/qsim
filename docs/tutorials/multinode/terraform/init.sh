@@ -2,8 +2,8 @@
 
 export TF_VAR_project=peters-4
 export TF_VAR_project_id=peters-4
-export TF_VAR_zone=us-west2-a
-export TF_VAR_region=us-west2
+export TF_VAR_zone=us-central1-b
+export TF_VAR_region=us-central1
 
 # ---- Do not edit below -----#
 
@@ -18,7 +18,7 @@ gcloud config set compute/region $TF_VAR_region
 
 gcloud config list
 
-gcloud iam service-accounts create htcondor --display-name="Run HTCondor" 
+gcloud iam service-accounts create htcondor --display-name="Run HTCondor"
 
 # Add roles
 gcloud projects add-iam-policy-binding ${TF_VAR_project} --member serviceAccount:${TF_VAR_service_account} --role roles/compute.admin
