@@ -1,9 +1,9 @@
 # ---- Edit below -----#
 
-export TF_VAR_project=quantum-htcondor-15
-export TF_VAR_project_id=us-east4-c
-export TF_VAR_zone=us-east4-c
-export TF_VAR_region=us-east4
+export TF_VAR_project=peters-4
+export TF_VAR_project_id=peters-4
+export TF_VAR_zone=us-west2-a
+export TF_VAR_region=us-west2
 
 # ---- Do not edit below -----#
 
