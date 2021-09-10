@@ -4,7 +4,8 @@ export TF_VAR_project=peters-4
 export TF_VAR_project_id=peters-4
 export TF_VAR_zone=us-central1-b
 export TF_VAR_region=us-central1
-
+export TF_VAR_multizone=true
+export TF_VAR_numzones=4  # for regional/multizone, set to the number of regions in the zone
 # ---- Do not edit below -----#
 
 export TF_VAR_project_id=${TF_VAR_project}
