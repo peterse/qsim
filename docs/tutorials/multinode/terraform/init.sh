@@ -1,7 +1,7 @@
 # ---- Edit below -----#
 
-export TF_VAR_project=peters-4
-export TF_VAR_project_id=peters-4
+export TF_VAR_project=peters-5
+export TF_VAR_project_id=peters-5
 export TF_VAR_zone=us-central1-b
 export TF_VAR_region=us-central1
 
