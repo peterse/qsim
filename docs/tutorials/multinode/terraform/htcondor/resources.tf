@@ -28,6 +28,15 @@ variable "project" {
 variable "zone" {
     type = string
 }
+variable "region" {
+    type = string
+}
+variable "numzones" {
+    type = string
+}
+variable "multizone" {
+    type = bool
+}
 variable "min_replicas" {
     type = number
     default = 0
@@ -74,6 +83,8 @@ locals{
       "htserver_type" = "compute",
       "osversion" = var.osversion,
       "zone" = var.zone,
+      "region" = var.region,
+      "multizone" = var.multizone,
       "condorversion" = var.condorversion,
       "max_replicas" = var.max_replicas,
       "autoscaler" = "",
@@ -88,6 +99,8 @@ locals{
       "osversion" = var.osversion,
       "condorversion" = var.condorversion,
       "zone" = var.zone,
+      "region" = var.region,
+      "multizone" = var.multizone,
       "max_replicas" = var.max_replicas,
       "autoscaler" = local.autoscaler,
       "admin_email" = var.admin_email
@@ -100,6 +113,8 @@ locals{
       "htserver_type" = "manager",
       "osversion" = var.osversion,
       "zone" = var.zone,
+      "region" = var.region,
+      "multizone" = var.multizone,
       "max_replicas" = var.max_replicas,
       "condorversion" = var.condorversion,
       "autoscaler" = "",
@@ -277,6 +292,7 @@ resource "google_compute_instance_template" "condor-compute" {
   tags = ["${var.cluster_name}-compute"]
 }
 resource "google_compute_instance_group_manager" "condor-compute-igm" {
+  count = var.multizone ? 0 : 1
   base_instance_name = var.cluster_name
   name               = var.cluster_name
 
@@ -302,6 +318,35 @@ resource "google_compute_instance_group_manager" "condor-compute-igm" {
    google_compute_instance_template.condor-compute
   ]
   zone = var.zone
+}
+
+resource "google_compute_region_instance_group_manager" "condor-compute-igm" {
+  count = var.multizone ? 1 : 0
+  base_instance_name = var.cluster_name
+  name               = var.cluster_name
+
+  project            = var.project
+  target_size        = "0"
+
+  update_policy {
+    max_surge_fixed         = var.numzones
+    minimal_action          = "REPLACE"
+    type                    = "OPPORTUNISTIC"
+  }
+
+  version {
+    instance_template = google_compute_instance_template.condor-compute.self_link
+    name              = ""
+  }
+  timeouts {
+    create = "60m"
+    delete = "2h"
+  }
+  # Yup, didn't want to use this, but I was getting create and destroy errors.
+  depends_on = [
+   google_compute_instance_template.condor-compute
+  ]
+  region = var.region
 }
 /*
 resource "google_compute_autoscaler" "condor-compute-as" {
