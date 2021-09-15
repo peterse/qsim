@@ -145,6 +145,9 @@ resource "google_compute_instance" "condor-manager" {
 
   machine_type            = var.instance_type
   metadata_startup_script = local.manager_startup
+  metadata = {
+    VmDnsSetting = "GlobalDefault"
+  }
   name                    = "${var.cluster_name}-manager"
   network_interface {
     access_config {
@@ -204,6 +207,10 @@ resource "google_compute_instance" "condor-submit" {
 
   machine_type            = var.instance_type
   metadata_startup_script = local.submit_startup
+  metadata = {
+    VmDnsSetting = "GlobalDefault"
+  }
+
   name                    = "${var.cluster_name}-submit"
 
   network_interface {
@@ -258,6 +265,7 @@ resource "google_compute_instance_template" "condor-compute" {
 
   metadata = {
     startup-script = local.compute_startup
+    VmDnsSetting = "GlobalDefault"
   }
 
   name = "${var.cluster_name}-compute"
