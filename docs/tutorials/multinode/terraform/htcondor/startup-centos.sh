@@ -63,6 +63,7 @@ if [ "$SERVER_TYPE" == "compute" ]; then
     sudo yum -y install cuda-drivers
     sudo yum install -y nvidia-cuda-toolkit
     export PATH="/usr/local/cuda-11.4/bin$${PATH:+:$${PATH}}"
+    wall "$PATH"
     wall "gpu install finished"
 fi
 
@@ -76,7 +77,8 @@ if [ "$SERVER_TYPE" == "compute" ]; then
     wall "starting qsim install"
     sudo yum install -y centos-release-scl
     sudo yum install -y devtoolset-7-gcc*
-    scl enable devtoolset-7 bash
+    # scl enable devtoolset-7 bash
+    source /opt/rh/devtoolset-7/enable
     sudo yum install -y python3 python3-devel.x86_64 python3-pip
     sudo python3 -m pip install pybind11 cirq-core
     cd /home/peterse583
