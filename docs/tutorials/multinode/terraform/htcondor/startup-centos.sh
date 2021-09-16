@@ -199,7 +199,7 @@ if [ "$SERVER_TYPE" == "compute" ]; then
     sudo yum -y install nvidia-driver-latest-dkms cuda
     sudo yum -y install cuda-drivers
     sudo yum install -y nvidia-cuda-toolkit
-    echo 'export PATH=/usr/local/cuda-11.4/bin${PATH:+:${PATH}}' >> ~/.bashrc
+    echo 'export PATH=/usr/local/cuda-11.4/bin$${PATH:+:$${PATH}}' >> ~/.bashrc
 fi
 
 ##############################################################
