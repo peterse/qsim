@@ -1,3 +1,6 @@
+# HEADS UP: this is just scratch code; this script never executes and its
+# contents must be relocated to the terraform startup script.
+
 ##############################################################
 # Install GPU drivers on Compute Nodes for Centos 7-x
 # This will NOT be configured for A100's.
@@ -14,12 +17,9 @@ if [ "$SERVER_TYPE" == "compute" ]; then
     sudo yum clean all
     sudo yum -y install nvidia-driver-latest-dkms cuda
     sudo yum -y install cuda-drivers
-
+    sudo yum install -y nvidia-cuda-toolkit
+    echo 'export PATH=/usr/local/cuda-11.4/bin${PATH:+:${PATH}}' >> ~/.bashrc
 fi
-
-# STILL TODO:
-# Installation: sudo yum install -y nvidia-cuda-toolkit
-# Add to PATH: export PATH=/usr/local/cuda-11.4/bin${PATH:+:${PATH}}
 
 ##############################################################
 # Update gcc to handle c++17 standards and install qsim from source
@@ -34,8 +34,12 @@ if [ "$SERVER_TYPE" == "compute" ]; then
     git clone https://github.com/quantumlib/qsim
     cd qsim
     make pybind
-    export PYTHONPATH=$PYTHONPATH:"$PWD"
+    echo 'export PYTHONPATH=$PYTHONPATH:"$PWD"' >> ~/.bashrc
 fi
 
-# STILL TODO:
-# Add to PATH: export PYTHONPATH=$PYTHONPATH:"$PWD"
+##############################################################
+# Make sure necessary environment variables are initialized and restart
+##############################################################
+if [ "$SERVER_TYPE" == "compute" ]; then
+    sudo reboot
+fi
