@@ -199,7 +199,7 @@ if [ "$SERVER_TYPE" == "compute" ]; then
     sudo yum -y install nvidia-driver-latest-dkms cuda
     sudo yum -y install cuda-drivers
     sudo yum install -y nvidia-cuda-toolkit
-    echo 'export PATH=/usr/local/cuda-11.4/bin$${PATH:+:$${PATH}}' >> ~/.bashrc
+    echo 'export PATH=/usr/local/cuda-11.4/bin$${PATH:+:$${PATH}}' >> $HOME/.bashrc
 fi
 
 ##############################################################
@@ -213,10 +213,11 @@ if [ "$SERVER_TYPE" == "compute" ]; then
     scl enable devtoolset-7 bash
     sudo yum install -y python3 python3-devel.x86_64 python3-pip
     sudo python3 -m pip install pybind11 cirq-core
+    cd $HOME
     git clone https://github.com/quantumlib/qsim
     cd qsim
     make pybind
-    echo 'export PYTHONPATH=$PYTHONPATH:"$PWD"' >> ~/.bashrc
+    echo 'export PYTHONPATH=$PYTHONPATH:"$PWD"' >> $HOME/.bashrc
     sudo reboot
 fi
 
