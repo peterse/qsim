@@ -1,7 +1,7 @@
 universe                = vanilla
 executable              = gpu.sh
 should_transfer_files   = YES
-transfer_input_files    = noise4.py
+transfer_input_files    = gpu.py
 when_to_transfer_output = ON_EXIT
 output                  = out/out.$(Cluster)-$(Process)
 error                   = out/err.$(Cluster)-$(Process)

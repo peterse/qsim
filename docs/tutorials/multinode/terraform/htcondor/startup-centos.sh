@@ -47,6 +47,8 @@ fi
 # Install GPU drivers on Compute Nodes for Centos 7-x
 # This will NOT be configured for A100's.
 # FIXME: the `reboot` here is dangerous. Could cause this script to loop.
+# NOTE: The exported environment variables here are for installation
+# purposes only and will not persist to htcondor submissions.
 ##############################################################
 if [ "$SERVER_TYPE" == "compute" ]; then
     wall "starting gpu install"
@@ -60,13 +62,15 @@ if [ "$SERVER_TYPE" == "compute" ]; then
     sudo yum -y install nvidia-driver-latest-dkms cuda
     sudo yum -y install cuda-drivers
     sudo yum install -y nvidia-cuda-toolkit
+    export PATH="/usr/local/cuda-11.4/bin${PATH:+:${PATH}}"
     wall "gpu install finished"
 fi
 
 ##############################################################
 # Update gcc to handle c++17 standards and install qsim from source
 # TODO: RHEL/Centos deprecated python3-dev??
-# Follow up with a reboot to source the desired environment variables
+# FIXME: I've hardcoded directories here because i don't know
+# which environment variables are accessible from this script.
 ##############################################################
 if [ "$SERVER_TYPE" == "compute" ]; then
     wall "starting qsim install"
@@ -78,7 +82,7 @@ if [ "$SERVER_TYPE" == "compute" ]; then
     cd /home/peterse583
     git clone https://github.com/quantumlib/qsim
     cd qsim
-    make pybind
+    sudo make
     wall "qsim installed."
 fi
 
