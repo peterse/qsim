@@ -19,6 +19,7 @@ else
 fi
 CONDOR_REPO_URL=https://research.cs.wisc.edu/htcondor/yum/repo.d/htcondor-stable-rhel${osversion}.repo
 
+wall "starting htcondor install"
 sleep 2 #Give it some time to setup yum
 cd /tmp
 yum update -y
@@ -31,6 +32,7 @@ yum install -y $CONDOR_INSTALL_OPT
 ##############################################################
 # Install Docker on Compute Nodes
 ##############################################################
+wall "starting docker install"
 if [ "$SERVER_TYPE" == "compute" ]; then
     yum install -y yum-utils
     yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
@@ -39,7 +41,7 @@ if [ "$SERVER_TYPE" == "compute" ]; then
     systemctl enable docker
     usermod -aG docker condor
 fi
-
+wall "finished docker install"
 ##############################################################
 # Configure Condor Daemons
 ##############################################################
