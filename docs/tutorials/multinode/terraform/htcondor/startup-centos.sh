@@ -77,6 +77,7 @@ if [ "$SERVER_TYPE" == "compute" ]; then
     wall "starting qsim install"
     sudo yum install -y centos-release-scl
     sudo yum install -y devtoolset-7-gcc*
+    # For some reason the command below fails; sourcing the toolset directly works.
     # scl enable devtoolset-7 bash
     source /opt/rh/devtoolset-7/enable
     sudo yum install -y python3 python3-devel.x86_64 python3-pip
