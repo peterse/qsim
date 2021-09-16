@@ -1,5 +1,5 @@
 universe                = vanilla
-exectuable              = gpu.sh
+executable              = gpu.sh
 should_transfer_files   = YES
 transfer_input_files    = noise4.py
 when_to_transfer_output = ON_EXIT
