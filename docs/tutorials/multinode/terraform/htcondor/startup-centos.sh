@@ -5,7 +5,7 @@ SERVER_TYPE="${htserver_type}"
 ##############################################################
 ## Install and configure HTCONDOR
 ##############################################################
-
+wall "entering startup-centos.sh"
 if [ "${condorversion}" == "" ]; then
    CONDOR_INSTALL_OPT="condor"
 else
@@ -39,7 +39,7 @@ if [ "$SERVER_TYPE" == "compute" ]; then
     systemctl enable docker
     usermod -aG docker condor
 fi
-
+wall "docker install finished"
 ##############################################################
 # Configure Condor Daemons
 ##############################################################
