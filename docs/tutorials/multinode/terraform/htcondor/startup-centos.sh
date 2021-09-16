@@ -32,16 +32,56 @@ yum install -y $CONDOR_INSTALL_OPT
 ##############################################################
 # Install Docker on Compute Nodes
 ##############################################################
-wall "starting docker install"
 if [ "$SERVER_TYPE" == "compute" ]; then
+    wall "starting docker install"
     yum install -y yum-utils
     yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
     yum install -y docker-ce docker-ce-cli containerd.io
     systemctl start docker
     systemctl enable docker
     usermod -aG docker condor
+    wall "finished docker install"
 fi
-wall "finished docker install"
+
+##############################################################
+# Install GPU drivers on Compute Nodes for Centos 7-x
+# This will NOT be configured for A100's.
+# FIXME: the `reboot` here is dangerous. Could cause this script to loop.
+##############################################################
+if [ "$SERVER_TYPE" == "compute" ]; then
+    wall "starting gpu install"
+    sudo yum clean all
+    sudo yum install -y kernel | grep -q 'already installed' || sudo reboot
+    sudo yum install -y kernel-devel-$(uname -r) kernel-headers-$(uname -r)
+    sudo yum install epel-release
+    sudo yum install -y yum-utils
+    sudo yum-config-manager --add-repo https://developer.download.nvidia.com/compute/cuda/repos/rhel7/x86_64/cuda-rhel7.repo
+    sudo yum clean all
+    sudo yum -y install nvidia-driver-latest-dkms cuda
+    sudo yum -y install cuda-drivers
+    sudo yum install -y nvidia-cuda-toolkit
+    wall "gpu install finished"
+fi
+
+##############################################################
+# Update gcc to handle c++17 standards and install qsim from source
+# TODO: RHEL/Centos deprecated python3-dev??
+# Follow up with a reboot to source the desired environment variables
+##############################################################
+if [ "$SERVER_TYPE" == "compute" ]; then
+    wall "starting qsim install"
+    sudo yum install -y centos-release-scl
+    sudo yum install -y devtoolset-7-gcc*
+    scl enable devtoolset-7 bash
+    sudo yum install -y python3 python3-devel.x86_64 python3-pip
+    sudo python3 -m pip install pybind11 cirq-core
+    cd /home/peterse583
+    git clone https://github.com/quantumlib/qsim
+    cd qsim
+    make pybind
+    wall "qsim installed."
+fi
+
 ##############################################################
 # Configure Condor Daemons
 ##############################################################
@@ -184,43 +224,6 @@ EOFZ
 
 echo "* * * * * python3 /opt/autoscaler.py --p ${project} --z ${zone} --r ${region} %{ if multizone }--mz %{ endif }--g ${cluster_name} --c ${max_replicas} | logger " |crontab -
 
-##############################################################
-# Install GPU drivers on Compute Nodes for Centos 7-x
-# This will NOT be configured for A100's.
-# FIXME: the `reboot` here is dangerous. Could cause this script to loop.
-##############################################################
-if [ "$SERVER_TYPE" == "compute" ]; then
-    wall "starting gpu install"
-    sudo yum clean all
-    sudo yum install -y kernel | grep -q 'already installed' || sudo reboot
-    sudo yum install -y kernel-devel-$(uname -r) kernel-headers-$(uname -r)
-    sudo yum install epel-release
-    sudo yum install -y yum-utils
-    sudo yum-config-manager --add-repo https://developer.download.nvidia.com/compute/cuda/repos/rhel7/x86_64/cuda-rhel7.repo
-    sudo yum clean all
-    sudo yum -y install nvidia-driver-latest-dkms cuda
-    sudo yum -y install cuda-drivers
-    sudo yum install -y nvidia-cuda-toolkit
-    wall "gpu install finished"
-fi
-
-##############################################################
-# Update gcc to handle c++17 standards and install qsim from source
-# TODO: RHEL/Centos deprecated python3-dev??
-# Follow up with a reboot to source the desired environment variables
-##############################################################
-if [ "$SERVER_TYPE" == "compute" ]; then
-    wall "starting qsim install"
-    sudo yum install -y centos-release-scl
-    sudo yum install -y devtoolset-7-gcc*
-    scl enable devtoolset-7 bash
-    sudo yum install -y python3 python3-devel.x86_64 python3-pip
-    sudo python3 -m pip install pybind11 cirq-core
-    cd /home/peterse583
-    git clone https://github.com/quantumlib/qsim
-    cd qsim
-    make pybind
-    wall "qsim installed."
 fi
 
 # Now we can let everyone know that the setup is complete.
