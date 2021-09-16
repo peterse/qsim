@@ -187,6 +187,7 @@ fi
 ##############################################################
 # Install GPU drivers on Compute Nodes for Centos 7-x
 # This will NOT be configured for A100's.
+# FIXME: the `reboot` here is dangerous. Could cause this script to loop.
 ##############################################################
 if [ "$SERVER_TYPE" == "compute" ]; then
     wall "starting gpu install"
@@ -200,7 +201,6 @@ if [ "$SERVER_TYPE" == "compute" ]; then
     sudo yum -y install nvidia-driver-latest-dkms cuda
     sudo yum -y install cuda-drivers
     sudo yum install -y nvidia-cuda-toolkit
-    echo 'export PATH=/usr/local/cuda-11.4/bin$${PATH:+:$${PATH}}' >> $HOME/.bashrc
     wall "gpu install finished"
 fi
 
@@ -220,10 +220,7 @@ if [ "$SERVER_TYPE" == "compute" ]; then
     git clone https://github.com/quantumlib/qsim
     cd qsim
     make pybind
-    echo 'export PYTHONPATH=$PYTHONPATH:"$PWD"' >> /home/peterse583/.bashrc
     wall "qsim installed."
-    sudo reboot
-    wall "rebooted system."
 fi
 
 # Now we can let everyone know that the setup is complete.
