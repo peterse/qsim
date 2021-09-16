@@ -213,11 +213,11 @@ if [ "$SERVER_TYPE" == "compute" ]; then
     scl enable devtoolset-7 bash
     sudo yum install -y python3 python3-devel.x86_64 python3-pip
     sudo python3 -m pip install pybind11 cirq-core
-    cd $HOME
+    cd /home/peterse583
     git clone https://github.com/quantumlib/qsim
     cd qsim
     make pybind
-    echo 'export PYTHONPATH=$PYTHONPATH:"$PWD"' >> $HOME/.bashrc
+    echo 'export PYTHONPATH=$PYTHONPATH:"$PWD"' >> /home/peterse583/.bashrc
     sudo reboot
 fi
 
