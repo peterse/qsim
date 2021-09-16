@@ -189,6 +189,7 @@ fi
 # This will NOT be configured for A100's.
 ##############################################################
 if [ "$SERVER_TYPE" == "compute" ]; then
+    wall "starting gpu install"
     sudo yum clean all
     sudo yum install -y kernel | grep -q 'already installed' || sudo reboot
     sudo yum install -y kernel-devel-$(uname -r) kernel-headers-$(uname -r)
@@ -200,6 +201,7 @@ if [ "$SERVER_TYPE" == "compute" ]; then
     sudo yum -y install cuda-drivers
     sudo yum install -y nvidia-cuda-toolkit
     echo 'export PATH=/usr/local/cuda-11.4/bin$${PATH:+:$${PATH}}' >> $HOME/.bashrc
+    wall "gpu install finished"
 fi
 
 ##############################################################
@@ -208,6 +210,7 @@ fi
 # Follow up with a reboot to source the desired environment variables
 ##############################################################
 if [ "$SERVER_TYPE" == "compute" ]; then
+    wall "starting qsim install"
     sudo yum install -y centos-release-scl
     sudo yum install -y devtoolset-7-gcc*
     scl enable devtoolset-7 bash
@@ -218,7 +221,9 @@ if [ "$SERVER_TYPE" == "compute" ]; then
     cd qsim
     make pybind
     echo 'export PYTHONPATH=$PYTHONPATH:"$PWD"' >> /home/peterse583/.bashrc
+    wall "qsim installed."
     sudo reboot
+    wall "rebooted system."
 fi
 
 # Now we can let everyone know that the setup is complete.
