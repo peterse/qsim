@@ -180,9 +180,7 @@ EOFZ
 
 # Create cron entry for autoscaler. Log to /var/log/messages
 
-# echo "* * * * * python3 /opt/autoscaler.py --p ${project} --z ${zone} --r ${region} %{ if multizone }--mz %{ endif }--g ${cluster_name} --c ${max_replicas} | logger " |crontab -
-
-fi
+echo "* * * * * python3 /opt/autoscaler.py --p ${project} --z ${zone} --r ${region} %{ if multizone }--mz %{ endif }--g ${cluster_name} --c ${max_replicas} | logger " |crontab -
 
 ##############################################################
 # Install GPU drivers on Compute Nodes for Centos 7-x
