@@ -43,6 +43,8 @@ if [ "$SERVER_TYPE" == "compute" ]; then
     wall "finished docker install"
 fi
 
+# COMMENTING THE BELOW OUT BECAUSE WE ARE SWITCHING TO DOING
+# COMPUTE NODES INITIALIZED FROM AN IMAGE!
 ##############################################################
 # Install GPU drivers on Compute Nodes for Centos 7-x
 # This will NOT be configured for A100's.
@@ -50,41 +52,41 @@ fi
 # NOTE: The exported environment variables here are for installation
 # purposes only and will not persist to htcondor submissions.
 ##############################################################
-if [ "$SERVER_TYPE" == "compute" ]; then
-    wall "starting gpu install"
-    sudo yum clean all
-    sudo yum install -y kernel | grep -q 'already installed' || sudo reboot
-    sudo yum install -y kernel-devel-$(uname -r) kernel-headers-$(uname -r)
-    sudo yum install epel-release
-    sudo yum install -y yum-utils
-    sudo yum-config-manager --add-repo https://developer.download.nvidia.com/compute/cuda/repos/rhel7/x86_64/cuda-rhel7.repo
-    sudo yum clean all
-    sudo yum -y install nvidia-driver-latest-dkms cuda
-    sudo yum -y install cuda-drivers
-    sudo yum install -y nvidia-cuda-toolkit
-    export PATH="/usr/local/cuda-11.4/bin$${PATH:+:$${PATH}}"
-fi
-
-##############################################################
-# Update gcc to handle c++17 standards and install qsim from source
-# TODO: RHEL/Centos deprecated python3-dev??
-# FIXME: I've hardcoded directories here because i don't know
-# which environment variables are accessible from this script.
-##############################################################
-if [ "$SERVER_TYPE" == "compute" ]; then
-    wall "starting qsim install"
-    sudo yum install -y centos-release-scl
-    sudo yum install -y devtoolset-7-gcc*
-    # For some reason the command below fails; sourcing the toolset directly works.
-    # scl enable devtoolset-7 bash
-    source /opt/rh/devtoolset-7/enable
-    sudo yum install -y python3 python3-devel.x86_64 python3-pip
-    sudo python3 -m pip install pybind11 cirq-core
-    cd /home/peterse583
-    git clone https://github.com/quantumlib/qsim
-    cd qsim
-    sudo make
-fi
+# if [ "$SERVER_TYPE" == "compute" ]; then
+#     wall "starting gpu install"
+#     sudo yum clean all
+#     sudo yum install -y kernel | grep -q 'already installed' || sudo reboot
+#     sudo yum install -y kernel-devel-$(uname -r) kernel-headers-$(uname -r)
+#     sudo yum install epel-release
+#     sudo yum install -y yum-utils
+#     sudo yum-config-manager --add-repo https://developer.download.nvidia.com/compute/cuda/repos/rhel7/x86_64/cuda-rhel7.repo
+#     sudo yum clean all
+#     sudo yum -y install nvidia-driver-latest-dkms cuda
+#     sudo yum -y install cuda-drivers
+#     sudo yum install -y nvidia-cuda-toolkit
+#     export PATH="/usr/local/cuda-11.4/bin$${PATH:+:$${PATH}}"
+# fi
+#
+# ##############################################################
+# # Update gcc to handle c++17 standards and install qsim from source
+# # TODO: RHEL/Centos deprecated python3-dev??
+# # FIXME: I've hardcoded directories here because i don't know
+# # which environment variables are accessible from this script.
+# ##############################################################
+# if [ "$SERVER_TYPE" == "compute" ]; then
+#     wall "starting qsim install"
+#     sudo yum install -y centos-release-scl
+#     sudo yum install -y devtoolset-7-gcc*
+#     # For some reason the command below fails; sourcing the toolset directly works.
+#     # scl enable devtoolset-7 bash
+#     source /opt/rh/devtoolset-7/enable
+#     sudo yum install -y python3 python3-devel.x86_64 python3-pip
+#     sudo python3 -m pip install pybind11 cirq-core
+#     cd /home/peterse583
+#     git clone https://github.com/quantumlib/qsim
+#     cd qsim
+#     sudo make
+# fi
 
 ##############################################################
 # Configure Condor Daemons
