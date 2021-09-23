@@ -1,9 +1,6 @@
 variable "project" {
   type=string
 }
-variable "project_id" {
-  type=string
-}
 variable "zone" {
   type=string
 }
@@ -21,10 +18,7 @@ variable "cluster_name" {
   type = string
   default = "c"
   description = "Name used to prefix resources in cluster."
-
-}
-variable "family" {
-  type=string
+  
 }
 
 module "htcondor" {
@@ -41,6 +35,6 @@ module "htcondor" {
   compute_instance_type = "custom-2-11264"
   service_account="htcondor@${var.project}.iam.gserviceaccount.com"
   use_preemptibles=false
-  osproject = var.project_id
-  osimage = var.family
+  osproject ="centos-cloud"
+  osimage ="centos-7"
 }

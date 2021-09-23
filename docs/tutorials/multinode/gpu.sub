@@ -7,4 +7,4 @@ output                  = out/out.$(Cluster)-$(Process)
 error                   = out/err.$(Cluster)-$(Process)
 log                     = out/log.$(Cluster)-$(Process)
 request_memory          = 10GB
-queue 1
+queue 2

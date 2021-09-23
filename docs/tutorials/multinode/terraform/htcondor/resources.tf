@@ -12,11 +12,11 @@ variable "osversion" {
 }
 variable "osimage" {
     type = string
-    default = "qsim-gpu"
+    default = "hpc-centos-7"
 }
 variable "osproject" {
   type = string
-  default = "peters-5"
+  default = "cloud-hpc-image-public"
 }
 variable "condorversion" {
     type = string

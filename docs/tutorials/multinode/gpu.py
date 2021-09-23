@@ -1,10 +1,8 @@
 """GPU accelerator testing."""
-import qsimcirq
 import cirq
+import qsimcirq
 
 print(qsimcirq.qsim_gpu)
-assert qsimcirq.qsim_gpu is not None
-
 # Create a Bell state, |00) + |11)
 q0, q1 = cirq.LineQubit.range(2)
 circuit = cirq.Circuit(
