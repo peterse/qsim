@@ -31,7 +31,6 @@ module "htcondor" {
   source = "./htcondor/"
   cluster_name = var.cluster_name
   project = var.project
-  project_id = var.project_id
   zone = var.zone
   region = var.region
   multizone = var.multizone
