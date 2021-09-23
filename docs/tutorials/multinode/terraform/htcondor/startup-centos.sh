@@ -63,8 +63,6 @@ if [ "$SERVER_TYPE" == "compute" ]; then
     sudo yum -y install cuda-drivers
     sudo yum install -y nvidia-cuda-toolkit
     export PATH="/usr/local/cuda-11.4/bin$${PATH:+:$${PATH}}"
-    wall "$PATH"
-    wall "gpu install finished"
 fi
 
 ##############################################################
@@ -86,7 +84,6 @@ if [ "$SERVER_TYPE" == "compute" ]; then
     git clone https://github.com/quantumlib/qsim
     cd qsim
     sudo make
-    wall "qsim installed."
 fi
 
 ##############################################################
