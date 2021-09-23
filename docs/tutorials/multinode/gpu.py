@@ -1,6 +1,6 @@
 """GPU accelerator testing."""
-import cirq
 import qsimcirq
+import cirq
 
 print(qsimcirq.qsim_gpu)
 assert qsimcirq.qsim_gpu is not None
