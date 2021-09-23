@@ -25,6 +25,9 @@ variable "condorversion" {
 variable "project" {
     type = string
 }
+variable "project_id" {
+    type = string
+}
 variable "zone" {
     type = string
 }
@@ -33,6 +36,9 @@ variable "region" {
 }
 variable "numzones" {
     type = string
+}
+variable "family" {
+  type=string
 }
 variable "multizone" {
     type = bool
