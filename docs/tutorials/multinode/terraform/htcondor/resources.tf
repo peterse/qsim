@@ -128,7 +128,6 @@ locals{
     })
 }
 data "google_compute_image" "startimage" {
-  name    = "qsim-gpu-2"
   family  = var.osimage
   project = var.osproject
 }
