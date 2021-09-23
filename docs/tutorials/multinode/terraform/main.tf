@@ -36,13 +36,12 @@ module "htcondor" {
   region = var.region
   multizone = var.multizone
   numzones = var.numzones
-  family = var.family
   osversion = "7"
   max_replicas=20
   min_replicas=0
   compute_instance_type = "custom-2-11264"
   service_account="htcondor@${var.project}.iam.gserviceaccount.com"
   use_preemptibles=false
-  osproject ="centos-cloud"
-  osimage ="centos-7"
+  osproject = var.project_id
+  osimage = var.family
 }
