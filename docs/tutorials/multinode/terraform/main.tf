@@ -18,7 +18,7 @@ variable "cluster_name" {
   type = string
   default = "c"
   description = "Name used to prefix resources in cluster."
-  
+
 }
 
 module "htcondor" {
@@ -30,7 +30,7 @@ module "htcondor" {
   multizone = var.multizone
   numzones = var.numzones
   osversion = "7"
-  max_replicas=20
+  max_replicas=30
   min_replicas=0
   compute_instance_type = "custom-2-11264"
   service_account="htcondor@${var.project}.iam.gserviceaccount.com"
