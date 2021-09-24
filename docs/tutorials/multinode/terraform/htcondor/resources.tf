@@ -43,7 +43,7 @@ variable "min_replicas" {
 }
 variable "max_replicas" {
     type = number
-    default = 20
+    default = 30
 }
 variable "use_preemptibles" {
     type = bool
