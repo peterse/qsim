@@ -59,11 +59,11 @@ variable "metric_target_queue" {
 }
 variable "compute_instance_type" {
   type = string
-  default = "n1-standard-1"
+  default = "a2-highgpu-1g"
 }
 variable "gpu_type" {
   type = string
-  default = "nvidia-tesla-t4"
+  default = "nvidia-tesla-a100"
 }
 variable "instance_type" {
   type = string
