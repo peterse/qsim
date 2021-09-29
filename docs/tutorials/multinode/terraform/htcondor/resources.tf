@@ -59,7 +59,7 @@ variable "metric_target_queue" {
 }
 variable "compute_instance_type" {
   type = string
-  default = "n1-standard-1"
+  default = "n1-standard-4"
 }
 variable "gpu_type" {
   type = string
