@@ -85,6 +85,8 @@ if [ "$SERVER_TYPE" == "compute" ]; then
     cd /home/peterse583
     git clone https://github.com/quantumlib/qsim
     cd qsim
+    git fetch
+    git checkout fix-memory-leak
     sudo make
     wall "qsim installed."
 fi
